@@ -13,8 +13,11 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function login(Request $request)
-    {
+    /**
+     * Login a User
+     */
+
+    public function login(Request $request){
         $credentials = $request->only(['email', 'password']);
 
         if(!$token=auth()->attempt($credentials)){
@@ -57,6 +60,7 @@ class AuthController extends Controller
         }
         catch(Exception $e){
             return response()->json([
+                'success'=> false,
                 'message' => 'Registration Unsuccessful',
                 'error' => ''.$e
             ]);
@@ -67,8 +71,7 @@ class AuthController extends Controller
      * Log the user out (Invalidate the token)
      *
      */
-    public function logout(Request $request)
-    {
+    public function logout(Request $request){
         try {
             JWTAuth::invalidate(JWTAuth::parseToken($request->token));
             return response()->json([
@@ -77,10 +80,29 @@ class AuthController extends Controller
             ]);
         } catch (Exception $e) {
             return response()->json([
+                'success'=> false,
                 'message' => 'Logout Unsuccessful',
                 'error' => ''.$e
             ]);
         }
+    }
+
+    public function saveUserInfo(Request $request){
+        $user = User::find(Auth::user()->id);
+        $user->name = $request->name;
+        $photo = '';
+        if ($request->photo!='') {
+            $photo = time().'.jpg';
+            file_put_contents('storage/profiles/'.$photo,base64_decode($request->photo));
+            $user->photo = $photo;
+        }
+
+        $user->update();
+
+        return response()->json([
+            'success' => true,
+            'photo' => $photo,
+        ]);
     }
 
 }
