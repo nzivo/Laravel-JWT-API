@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class JWTMiddleware
 {
@@ -15,6 +16,22 @@ class JWTMiddleware
      */
     public function handle($request, Closure $next)
     {
-        return $next($request);
+
+        $message = '';
+
+        try{
+            JWTAuth::parseToken()->authenticate();
+            return $next($request);
+        }catch(\Tymon\JWTAuth\Exceptions\TokenExpiredException $e){
+            $message = 'Token expired';
+        }catch(\Tymon\JWTAuth\Exceptions\TokenInvalidException $e){
+            $message = 'Invalid token';
+        }catch(\Tymon\JWTAuth\Exceptions\JWTException $e){
+            $message = 'Provide token';
+        }
+        return response()->json([
+            'success' => false,
+            'message' => $message
+        ]);
     }
 }
