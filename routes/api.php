@@ -22,3 +22,5 @@ Route::post('login', 'AuthController@login');
 Route::post('register', 'AuthController@register');
 Route::get('logout', 'AuthController@logout');
 Route::post('save_user_info', 'AuthController@saveUserInfo')->middleware('jwtAuth');
+
+Route::apiResource('user', 'API\UserController');
