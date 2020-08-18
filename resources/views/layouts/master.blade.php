@@ -233,8 +233,11 @@
     <!-- /.sidebar -->
   </aside>
 
-    <router-view></router-view>
     <!-- /.router-view -->
+    <router-view></router-view>
+
+    <!-- set progressbar -->
+    <vue-progress-bar></vue-progress-bar>
 
   <!-- Control Sidebar -->
   <aside class="control-sidebar control-sidebar-dark">
