@@ -7,25 +7,64 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
+import moment from 'moment';
+import VueProgressBar from 'vue-progressbar';
+
 import { Form, HasError, AlertError } from 'vform';
-
 window.form = Form;
-Vue.component(HasError.name, HasError)
-Vue.component(AlertError.name, AlertError)
+Vue.component(HasError.name, HasError);
+Vue.component(AlertError.name, AlertError);
 
-import VueRouter from 'vue-router'
-Vue.use(VueRouter)
+import Swal from 'sweetalert2/src/sweetalert2.js';
+window.Swal = Swal;
+
+import VueRouter from 'vue-router';
+Vue.use(VueRouter);
 
 let routes = [
     { path: '/dashboard', component: require('./components/Dashboard.vue').default },
     { path: '/users', component: require('./components/Users.vue').default },
     { path: '/profile', component: require('./components/Profile.vue').default }
-]
+];
 
 const router = new VueRouter({
     mode: 'history',
     routes // short for `routes: routes`
-})
+});
+
+//First letter uppercase
+Vue.filter('upperCase', function(text){
+    return text.charAt(0).toUpperCase()+text.slice(1);
+});
+
+//Date format DD Month Year Time
+Vue.filter('customDate', function(created){
+    return moment(created).format('MMMM Do YYYY, h:mm:ss a');
+});
+
+//Vue Progressbar
+Vue.use(VueProgressBar, {
+    color: 'rgb(143, 255, 199)',
+    failedColor: 'red',
+    height: '5px'
+  });
+
+//SweetAlert2
+const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    onOpen: (toast) => {
+      toast.addEventListener('mouseenter', Swal.stopTimer)
+      toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+  });
+
+window.Toast = Toast;
+
+window.Fire = new Vue();
 
 /**
  * The following block of code may be used to automatically register your
@@ -53,4 +92,4 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 
 const app = new Vue({
     router
-  }).$mount('#app')
+  }).$mount('#app');
