@@ -12,6 +12,9 @@ $fa-font-path: "../webfonts";
 // Admin LTE
 @import '~admin-lte/dist/css/adminlte.min.css';
 
+//SweetAlert
+@import '~@sweetalert2/themes/dark/dark.scss';
+
 @import "~@fortawesome/fontawesome-free/scss/fontawesome.scss";
 @import "~@fortawesome/fontawesome-free/scss/solid.scss";
 @import "~@fortawesome/fontawesome-free/scss/brands.scss";
