@@ -22,6 +22,7 @@ class CreateBooksTable extends Migration
             $table->string('book_publisher');
             $table->integer('book_pages');
             $table->integer('book_year');
+            $table->string('book_status')->default('Available');
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->foreignId('book_type_id')->constrained()->onDelete('cascade');
             $table->timestamps();
