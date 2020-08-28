@@ -186,17 +186,33 @@
                 </a>
                 <ul class="nav nav-treeview">
                     <li class="nav-item">
-                    <router-link to="/users" class="nav-link">
-                        <i class="fas fa-users nav-icon"></i>
-                        <p>Users</p>
-                    </router-link>
+                        <router-link to="/users" class="nav-link">
+                            <i class="fas fa-users nav-icon"></i>
+                            <p>Users</p>
+                        </router-link>
                     </li>
+
                     <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-circle nav-icon"></i>
-                        <p>Inactive Page</p>
-                    </a>
+                        <router-link to="/categories" class="nav-link">
+                            <i class="fas fa-users nav-icon"></i>
+                            <p>Categories</p>
+                        </router-link>
                     </li>
+
+                    <li class="nav-item">
+                        <router-link to="/book_types" class="nav-link">
+                            <i class="fas fa-users nav-icon"></i>
+                            <p>Book Types</p>
+                        </router-link>
+                    </li>
+
+                    <li class="nav-item">
+                        <router-link to="/books" class="nav-link">
+                            <i class="fas fa-users nav-icon"></i>
+                            <p>Books</p>
+                        </router-link>
+                    </li>
+
                 </ul>
             </li>
 

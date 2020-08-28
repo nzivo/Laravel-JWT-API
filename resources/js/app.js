@@ -24,7 +24,10 @@ Vue.use(VueRouter);
 let routes = [
     { path: '/dashboard', component: require('./components/Dashboard.vue').default },
     { path: '/users', component: require('./components/Users.vue').default },
-    { path: '/profile', component: require('./components/Profile.vue').default }
+    { path: '/profile', component: require('./components/Profile.vue').default },
+    { path: '/categories', component: require('./components/Categories.vue').default },
+    { path: '/book_types', component: require('./components/Book_Type.vue').default },
+    { path: '/books', component: require('./components/Books.vue').default }
 ];
 
 const router = new VueRouter({
