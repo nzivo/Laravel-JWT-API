@@ -8,12 +8,12 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0 text-dark">Users</h1>
+                    <h1 class="m-0 text-dark">Categories</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="/home">Home</a></li>
-                    <li class="breadcrumb-item active">Users</li>
+                    <li class="breadcrumb-item active">Categories</li>
                     </ol>
                 </div><!-- /.col -->
                 </div><!-- /.row -->
@@ -30,10 +30,10 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title"><i class="fas fa-users nav-icon"></i> Users</h3>
+                                <h3 class="card-title"><i class="fas fa-users nav-icon"></i> Categories</h3>
 
                                 <div class="card-tools">
-                                    <button class="btn btn-primary bg-gradient-primary" @click.prevent="newModal"><i class="fas fa-user-plus"></i> New User</button>
+                                    <button class="btn btn-primary bg-gradient-primary" @click.prevent="newModal"><i class="fas fa-user-plus"></i> New Category</button>
                                 </div>
                             </div>
                             <!-- /.card-header -->
@@ -42,25 +42,19 @@
                                     <thead>
                                         <tr>
                                             <th>ID</th>
-                                            <th>Name</th>
-                                            <th>Email</th>
-                                            <th>Occupation</th>
-                                            <th>Registered on</th>
+                                            <th>Category Name</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="user in users" :key="user.id">
-                                            <td>{{user.id}}</td>
-                                            <td>{{user.name | upperCase}}</td>
-                                            <td>{{user.email}}</td>
-                                            <td>{{user.occupation }}</td>
-                                            <td>{{user.created_at | customDate}}</td>
+                                        <tr v-for="category in categories" :key="category.id">
+                                            <td>{{category.id}}</td>
+                                            <td>{{category.category_name}}</td>
                                             <td>
-                                                <a href="" @click.prevent="editModal(user)">
+                                                <a href="" @click.prevent="editModal(category)">
                                                     <i class="fas fa-edit blue"></i>
                                                 </a>
-                                                <a href="" @click.prevent="deleteUser(user.id)">
+                                                <a href="" @click.prevent="deleteCategory(category.id)">
                                                     <i class="fas fa-trash red"></i>
                                                 </a>
                                             </td>
@@ -75,53 +69,39 @@
                 </div>
 
 
-                <!--AddUser Modal -->
-                <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+                <!--AddCategory Modal -->
+                <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
                         <div class="modal-header">
-                            <h5 v-show="editmode" class="modal-title" id="addUserModalLabel">Update User Details</h5>
-                            <h5 v-show="!editmode" class="modal-title" id="addUserModalLabel">Create New User</h5>
+                            <h5 v-show="editmode" class="modal-title" id="addCategoryModalLabel">Update Category Details</h5>
+                            <h5 v-show="!editmode" class="modal-title" id="addCategoryModalLabel">Create New Category</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <form @submit.prevent="editmode ? updateUser() : createUser()">
+                        <form @submit.prevent="editmode ? updateCategory() : createCategory()">
 
                             <div class="modal-body">
                                 <div class="form-group">
-                                    <input v-model="form.name" id="name" type="text" name="name" Placeholder="Full Names"
-                                        class="form-control" :class="{ 'is-invalid': form.errors.has('name') }">
-                                    <has-error :form="form" field="name"></has-error>
+                                    <input v-model="form.category_name" id="category_name" type="text" name="category_name" Placeholder="Category Name"
+                                        class="form-control" :class="{ 'is-invalid': form.errors.has('category_name') }">
+                                    <has-error :form="form" field="category_name"></has-error>
                                 </div>
                                 <div class="form-group">
-                                    <input v-model="form.email" id="email" type="email" name="email" Placeholder="Email Address"
-                                        class="form-control" :class="{ 'is-invalid': form.errors.has('email') }">
-                                    <has-error :form="form" field="email"></has-error>
+                                    <textarea v-model="form.category_description" id="category_description" type="category_description" name="category_description" Placeholder="Category Description"
+                                        class="form-control" :class="{ 'is-invalid': form.errors.has('category_description') }">
+                                    </textarea>
+                                    <has-error :form="form" field="category_description"></has-error>
                                 </div>
                                 <div class="form-group">
-                                    <input v-model="form.phone" id="phone" type="text" name="phone" Placeholder="2547********"
-                                        class="form-control" :class="{ 'is-invalid': form.errors.has('phone') }">
-                                    <has-error :form="form" field="phone"></has-error>
-                                </div>
-                                <div class="form-group">
-                                    <select v-model="form.occupation" id="text" name="occupation"
-                                        class="form-control" :class="{ 'is-invalid': form.errors.has('occupation') }">
-                                        <option value="" disabled selected hidden>Choose Occupation</option>
-                                        <option value="Student">Student</option>
-                                        <option value="Professional">Professional</option>
+                                    <select v-model="form.category_status" id="text" name="category_status"
+                                        class="form-control" :class="{ 'is-invalid': form.errors.has('category_status') }">
+                                        <option value="" disabled selected hidden>Choose Status</option>
+                                        <option value="Enabled">Enabled</option>
+                                        <option value="Disabled">Disabled</option>
                                     </select>
-                                    <has-error :form="form" field="occupation"></has-error>
-                                </div>
-                                <div class="form-group">
-                                    <input v-model="form.institution" id="institution" type="text" name="institution" Placeholder="Institution"
-                                        class="form-control" :class="{ 'is-invalid': form.errors.has('institution') }">
-                                    <has-error :form="form" field="institution"></has-error>
-                                </div>
-                                <div class="form-group">
-                                    <input v-model="form.password" type="password" name="password" Placeholder="Password"
-                                        class="form-control" :class="{ 'is-invalid': form.errors.has('password') }">
-                                    <has-error :form="form" field="password"></has-error>
+                                    <has-error :form="form" field="category_status"></has-error>
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -155,23 +135,20 @@
         data() {
             return{
                 editmode: false,
-                users: {},
+                categories: {},
                 form: new Form({
                     id: '',
-                    name : '',
-                    email : '',
-                    phone : '',
-                    occupation : '',
-                    institution : '',
-                    password : ''
+                    category_name : '',
+                    category_description : '',
+                    category_status : '',
                 })
             }
         },
         methods: {
-            deleteUser(id){
+            deleteCategory(id){
                 Swal.fire({
                     title: 'Are you sure?',
-                    text: "You want to delete the user",
+                    text: "You want to delete the Category",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -180,14 +157,14 @@
                     }).then((result) => {
 
                         if (result.value) {
-                            this.form.delete('api/user/'+id).then(()=>{
+                            this.form.delete('api/category/'+id).then(()=>{
 
                                 this.$Progress.start()
-                                Fire.$emit('reloadUsers');
+                                Fire.$emit('reloadCategories');
 
                                 Swal.fire(
                                     'Deleted!',
-                                    'Your file has been deleted.',
+                                    'Your record has been deleted.',
                                     'success'
                                 );
 
@@ -203,21 +180,21 @@
                     }
                 })
             },
-            viewUsers(){
-                axios.get("api/user").then(({data}) => (this.users = data.data));
+            viewCategories(){
+                axios.get("api/category").then(({data}) => (this.categories = data.data));
             },
-            createUser(){
+            createCategory(){
                 this.$Progress.start()
-                this.form.post('api/user')
+                this.form.post('api/category')
                 .then(()=>{
 
-                Fire.$emit('reloadUsers');
+                Fire.$emit('reloadCategories');
 
-                $('#addUserModal').modal('hide');
+                $('#addCategoryModal').modal('hide');
 
                 Toast.fire({
                     icon: 'success',
-                    title: 'User Registered successfully'
+                    title: 'Category Added successfully'
                 });
 
                     this.$Progress.finish()
@@ -227,11 +204,11 @@
                 });
 
             },
-            updateUser(id){
+            updateCategory(id){
                 this.$Progress.start()
-                this.form.put('api/user/'+ this.form.id).then(() => {
+                this.form.put('api/category/'+ this.form.id).then(() => {
 
-                    $('#addUserModal').modal('hide');
+                    $('#addCategoryModal').modal('hide');
 
                     Swal.fire(
                         'Update!',
@@ -241,28 +218,28 @@
 
                     this.$Progress.finish();
 
-                    Fire.$emit('reloadUsers');
+                    Fire.$emit('reloadCategories');
 
                 }).catch(() => {
                     this.$Progress.fail()
                 })
             },
-            editModal(user){
+            editModal(category){
                 this.editmode = true;
                 this.form.clear();
-                $('#addUserModal').modal('show');
-                this.form.fill(user);
+                $('#addCategoryModal').modal('show');
+                this.form.fill(category);
             },
             newModal(){
                 this.editmode = false;
                 this.form.clear();
-                $('#addUserModal').modal('show');
+                $('#addCategoryModal').modal('show');
             },
         },
         created() {
-            this.viewUsers();
-            Fire.$on('reloadUsers',() => {
-                this.viewUsers();
+            this.viewCategories();
+            Fire.$on('reloadCategories',() => {
+                this.viewCategories();
             });
         }
     }
