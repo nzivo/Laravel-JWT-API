@@ -30,10 +30,10 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title"><i class="fas fa-users nav-icon"></i> Categories</h3>
+                                <h3 class="card-title"><i class="fas fa-list-ol nav-icon"></i> Categories</h3>
 
                                 <div class="card-tools">
-                                    <button class="btn btn-primary bg-gradient-primary" @click.prevent="newModal"><i class="fas fa-user-plus"></i> New Category</button>
+                                    <button class="btn btn-primary bg-gradient-primary" @click.prevent="newModal"><i class="fas fa-list-ol"></i> New Category</button>
                                 </div>
                             </div>
                             <!-- /.card-header -->
@@ -43,6 +43,7 @@
                                         <tr>
                                             <th>ID</th>
                                             <th>Category Name</th>
+                                            <th>Category Status</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -50,6 +51,7 @@
                                         <tr v-for="category in categories" :key="category.id">
                                             <td>{{category.id}}</td>
                                             <td>{{category.category_name}}</td>
+                                            <td>{{category.category_status}}</td>
                                             <td>
                                                 <a href="" @click.prevent="editModal(category)">
                                                     <i class="fas fa-edit blue"></i>
