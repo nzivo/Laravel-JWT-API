@@ -194,21 +194,21 @@
 
                     <li class="nav-item">
                         <router-link to="/categories" class="nav-link">
-                            <i class="fas fa-users nav-icon"></i>
+                            <i class="fas fa-list-ol nav-icon"></i>
                             <p>Categories</p>
                         </router-link>
                     </li>
 
                     <li class="nav-item">
                         <router-link to="/book_types" class="nav-link">
-                            <i class="fas fa-users nav-icon"></i>
+                            <i class="fas fa-stream nav-icon"></i>
                             <p>Book Types</p>
                         </router-link>
                     </li>
 
                     <li class="nav-item">
                         <router-link to="/books" class="nav-link">
-                            <i class="fas fa-users nav-icon"></i>
+                            <i class="fas fa-book nav-icon"></i>
                             <p>Books</p>
                         </router-link>
                     </li>
