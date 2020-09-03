@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\API;
 
 use App\Role;
-use App\Category;
 use Exception;
+use App\Model\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Category\CategoryCollection;
+use App\Http\Resources\Category\CategoryResource;
 use Illuminate\Support\Facades\Hash;
 
 class CategoryController extends Controller
@@ -18,7 +20,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return Category::latest()->paginate(10);
+        // return Category::latest()->paginate(10);
+        return CategoryCollection::collection(Category::latest()->paginate(10));
     }
 
     /**
@@ -64,9 +67,9 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Category $category)
     {
-        //
+        return new CategoryResource($category);
     }
 
     /**
