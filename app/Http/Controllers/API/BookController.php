@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
+use Exception;
+use App\Model\Book;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\Book\BookResource;
 
 class BookController extends Controller
 {
@@ -14,7 +17,7 @@ class BookController extends Controller
      */
     public function index()
     {
-        //
+        return BookResource::collection(Book::latest()->paginate(10));
     }
 
     /**
@@ -25,7 +28,57 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            // 'book_photo' => ['required', 'string'],
+            'book_name' => ['required', 'string'],
+            'book_description' => ['required', 'string'],
+            'book_author' => ['required', 'string'],
+            'book_publisher' => ['required', 'string'],
+            'book_pages' => ['required', 'integer'],
+            'book_year' => ['required', 'integer'],
+            'catalogue_no' => ['required', 'string'],
+            'accession_no' => ['required', 'string'],
+            'book_status' => ['required', 'string'],
+            'category_id' => ['required', 'integer'],
+            'book_type_id' => ['required', 'integer'],
+        ]);
+
+        $book = new Book();
+        $book_photo = '';
+
+        try{
+            if ($request->book_photo!='') {
+                $book_photo = time().'.jpg';
+                file_put_contents('storage/books/'.$book_photo,base64_decode($request->book_photo));
+                $book->book_photo = $book_photo;
+            }
+            $book->book_name = $request->book_name;
+            $book->book_description = $request->book_description;
+            $book->book_author = $request->book_author;
+            $book->book_publisher = $request->book_publisher;
+            $book->book_pages = $request->book_pages;
+            $book->book_year = $request->book_year;
+            $book->catalogue_no = $request->catalogue_no;
+            $book->accession_no = $request->accession_no;
+            $book->book_status = $request->book_status;
+            $book->category_id = $request->category_id;
+            $book->book_type_id = $request->book_type_id;
+
+            $book->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Added Successfully'
+            ]);
+        }
+        catch(Exception $e){
+            return response()->json([
+                'success'=> false,
+                'message' => 'Unsuccessful',
+                'error' => ''.$e
+            ]);
+        }
+
     }
 
     /**
@@ -34,9 +87,9 @@ class BookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Book $book)
     {
-        //
+        return new BookResource($book);
     }
 
     /**
