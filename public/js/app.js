@@ -2336,31 +2336,81 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       editmode: false,
-      users: {},
+      books: {},
+      bookTypes: {},
+      categories: {},
       form: new vform__WEBPACK_IMPORTED_MODULE_0___default.a({
-        id: '',
-        name: '',
-        email: '',
-        phone: '',
-        occupation: '',
-        institution: '',
-        password: ''
+        book_name: '',
+        book_description: '',
+        book_author: '',
+        book_publisher: '',
+        book_pages: '',
+        book_year: '',
+        catalogue_no: '',
+        accession_no: '',
+        book_status: '',
+        category_id: '',
+        book_type_id: ''
       })
     };
   },
   methods: {
-    deleteUser: function deleteUser(id) {
+    deleteBook: function deleteBook(id) {
       var _this = this;
 
       sweetalert2_src_sweetalert2_js__WEBPACK_IMPORTED_MODULE_1__["default"].fire({
         title: 'Are you sure?',
-        text: "You want to delete the user",
+        text: "You want to delete the Book",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -2368,10 +2418,10 @@ __webpack_require__.r(__webpack_exports__);
         confirmButtonText: 'Yes, delete it!'
       }).then(function (result) {
         if (result.value) {
-          _this.form["delete"]('api/user/' + id).then(function () {
+          _this.form["delete"]('api/book/' + id).then(function () {
             _this.$Progress.start();
 
-            Fire.$emit('reloadUsers');
+            Fire.$emit('reloadBooks');
             sweetalert2_src_sweetalert2_js__WEBPACK_IMPORTED_MODULE_1__["default"].fire('Deleted!', 'Your file has been deleted.', 'success');
 
             _this.$Progress.finish();
@@ -2381,64 +2431,88 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    viewUsers: function viewUsers() {
+    viewBooks: function viewBooks() {
       var _this2 = this;
 
-      axios.get("api/user").then(function (_ref) {
+      axios.get("api/book").then(function (_ref) {
         var data = _ref.data;
-        return _this2.users = data.data;
+        return _this2.books = data.data;
       });
     },
-    createUser: function createUser() {
+    viewCategories: function viewCategories() {
       var _this3 = this;
 
-      this.$Progress.start();
-      this.form.post('api/user').then(function () {
-        Fire.$emit('reloadUsers');
-        $('#addUserModal').modal('hide');
-        Toast.fire({
-          icon: 'success',
-          title: 'User Registered successfully'
-        });
-
-        _this3.$Progress.finish();
-      })["catch"](function () {
-        _this3.$Progress.fail();
+      axios.get("api/category").then(function (_ref2) {
+        var data = _ref2.data;
+        return _this3.categories = data.data;
       });
     },
-    updateUser: function updateUser(id) {
+    viewBookTypes: function viewBookTypes() {
       var _this4 = this;
 
-      this.$Progress.start();
-      this.form.put('api/user/' + this.form.id).then(function () {
-        $('#addUserModal').modal('hide');
-        sweetalert2_src_sweetalert2_js__WEBPACK_IMPORTED_MODULE_1__["default"].fire('Update!', 'Your Record has been updated.', 'success');
-
-        _this4.$Progress.finish();
-
-        Fire.$emit('reloadUsers');
-      })["catch"](function () {
-        _this4.$Progress.fail();
+      axios.get("api/bookType", {
+        params: {
+          category_id: this.category
+        }
+      }).then(function (_ref3) {
+        var data = _ref3.data;
+        return _this4.bookTypes = data.data;
       });
     },
-    editModal: function editModal(user) {
+    createBook: function createBook() {
+      var _this5 = this;
+
+      this.$Progress.start();
+      this.form.post('api/book').then(function () {
+        Fire.$emit('reloadBooks');
+        $('#addBookModal').modal('hide');
+        Toast.fire({
+          icon: 'success',
+          title: 'Book Registered successfully'
+        });
+
+        _this5.$Progress.finish();
+      })["catch"](function () {
+        _this5.$Progress.fail();
+      });
+    },
+    updateBook: function updateBook(id) {
+      var _this6 = this;
+
+      this.$Progress.start();
+      this.form.put('api/book/' + this.form.id).then(function () {
+        $('#addBookModal').modal('hide');
+        sweetalert2_src_sweetalert2_js__WEBPACK_IMPORTED_MODULE_1__["default"].fire('Update!', 'Your Record has been updated.', 'success');
+
+        _this6.$Progress.finish();
+
+        Fire.$emit('reloadBooks');
+      })["catch"](function () {
+        _this6.$Progress.fail();
+      });
+    },
+    editModal: function editModal(book) {
+      this.viewBookTypes();
+      this.viewCategories();
       this.editmode = true;
       this.form.clear();
-      $('#addUserModal').modal('show');
-      this.form.fill(user);
+      $('#addBookModal').modal('show');
+      this.form.fill(book);
     },
     newModal: function newModal() {
+      this.viewBookTypes();
+      this.viewCategories();
       this.editmode = false;
       this.form.clear();
-      $('#addUserModal').modal('show');
+      $('#addBookModal').modal('show');
     }
   },
   created: function created() {
-    var _this5 = this;
+    var _this7 = this;
 
-    this.viewUsers();
-    Fire.$on('reloadUsers', function () {
-      _this5.viewUsers();
+    this.viewBooks();
+    Fire.$on('reloadBooks', function () {
+      _this7.viewBooks();
     });
   }
 });
@@ -66034,8 +66108,8 @@ var render = function() {
                         }
                       },
                       [
-                        _c("i", { staticClass: "fas fa-user-plus" }),
-                        _vm._v(" New User")
+                        _c("i", { staticClass: "fas fa-book" }),
+                        _vm._v(" New Book")
                       ]
                     )
                   ])
@@ -66050,21 +66124,37 @@ var render = function() {
                       _vm._v(" "),
                       _c(
                         "tbody",
-                        _vm._l(_vm.users, function(user) {
-                          return _c("tr", { key: user.id }, [
-                            _c("td", [_vm._v(_vm._s(user.id))]),
-                            _vm._v(" "),
-                            _c("td", [
-                              _vm._v(_vm._s(_vm._f("upperCase")(user.name)))
-                            ]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v(_vm._s(user.email))]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v(_vm._s(user.occupation))]),
+                        _vm._l(_vm.books, function(book) {
+                          return _c("tr", { key: book.id }, [
+                            _c("td", [_vm._v(_vm._s(book.id))]),
                             _vm._v(" "),
                             _c("td", [
                               _vm._v(
-                                _vm._s(_vm._f("customDate")(user.created_at))
+                                _vm._s(_vm._f("upperCase")(book.book_name))
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [
+                              _vm._v(
+                                _vm._s(_vm._f("upperCase")(book.book_author))
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [_vm._v(_vm._s(book.book_year))]),
+                            _vm._v(" "),
+                            _c("td", [
+                              _vm._v(
+                                _vm._s(_vm._f("upperCase")(book.type_name))
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [
+                              _vm._v(_vm._s(_vm._f("upperCase")(book.category)))
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [
+                              _vm._v(
+                                _vm._s(_vm._f("upperCase")(book.book_status))
                               )
                             ]),
                             _vm._v(" "),
@@ -66076,7 +66166,7 @@ var render = function() {
                                   on: {
                                     click: function($event) {
                                       $event.preventDefault()
-                                      return _vm.editModal(user)
+                                      return _vm.editModal(book)
                                     }
                                   }
                                 },
@@ -66090,7 +66180,7 @@ var render = function() {
                                   on: {
                                     click: function($event) {
                                       $event.preventDefault()
-                                      return _vm.deleteUser(user.id)
+                                      return _vm.deleteBook(book.id)
                                     }
                                   }
                                 },
@@ -66113,10 +66203,10 @@ var render = function() {
             {
               staticClass: "modal fade",
               attrs: {
-                id: "addUserModal",
+                id: "addBookModal",
                 tabindex: "-1",
                 role: "dialog",
-                "aria-labelledby": "addUserModalLabel",
+                "aria-labelledby": "addBookModalLabel",
                 "aria-hidden": "true"
               }
             },
@@ -66142,9 +66232,9 @@ var render = function() {
                             }
                           ],
                           staticClass: "modal-title",
-                          attrs: { id: "addUserModalLabel" }
+                          attrs: { id: "addBookModalLabel" }
                         },
-                        [_vm._v("Update User Details")]
+                        [_vm._v("Update Book Details")]
                       ),
                       _vm._v(" "),
                       _c(
@@ -66159,9 +66249,9 @@ var render = function() {
                             }
                           ],
                           staticClass: "modal-title",
-                          attrs: { id: "addUserModalLabel" }
+                          attrs: { id: "addBookModalLabel" }
                         },
-                        [_vm._v("Create New User")]
+                        [_vm._v("Create New Book")]
                       ),
                       _vm._v(" "),
                       _vm._m(3)
@@ -66173,12 +66263,14 @@ var render = function() {
                         on: {
                           submit: function($event) {
                             $event.preventDefault()
-                            _vm.editmode ? _vm.updateUser() : _vm.createUser()
+                            _vm.editmode ? _vm.updateBook() : _vm.createBook()
                           }
                         }
                       },
                       [
                         _c("div", { staticClass: "modal-body" }, [
+                          _vm._m(4),
+                          _vm._v(" "),
                           _c(
                             "div",
                             { staticClass: "form-group" },
@@ -66188,21 +66280,21 @@ var render = function() {
                                   {
                                     name: "model",
                                     rawName: "v-model",
-                                    value: _vm.form.name,
-                                    expression: "form.name"
+                                    value: _vm.form.book_name,
+                                    expression: "form.book_name"
                                   }
                                 ],
                                 staticClass: "form-control",
                                 class: {
-                                  "is-invalid": _vm.form.errors.has("name")
+                                  "is-invalid": _vm.form.errors.has("book_name")
                                 },
                                 attrs: {
-                                  id: "name",
+                                  id: "book_name",
                                   type: "text",
-                                  name: "name",
-                                  Placeholder: "Full Names"
+                                  name: "book_name",
+                                  Placeholder: "Book Title"
                                 },
-                                domProps: { value: _vm.form.name },
+                                domProps: { value: _vm.form.book_name },
                                 on: {
                                   input: function($event) {
                                     if ($event.target.composing) {
@@ -66210,7 +66302,7 @@ var render = function() {
                                     }
                                     _vm.$set(
                                       _vm.form,
-                                      "name",
+                                      "book_name",
                                       $event.target.value
                                     )
                                   }
@@ -66218,7 +66310,57 @@ var render = function() {
                               }),
                               _vm._v(" "),
                               _c("has-error", {
-                                attrs: { form: _vm.form, field: "name" }
+                                attrs: { form: _vm.form, field: "book_name" }
+                              })
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            { staticClass: "form-group" },
+                            [
+                              _c("textarea", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.form.book_description,
+                                    expression: "form.book_description"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                class: {
+                                  "is-invalid": _vm.form.errors.has(
+                                    "book_description"
+                                  )
+                                },
+                                attrs: {
+                                  id: "book_description",
+                                  type: "book_description",
+                                  name: "book_description",
+                                  Placeholder: "Book Description"
+                                },
+                                domProps: { value: _vm.form.book_description },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.form,
+                                      "book_description",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("has-error", {
+                                attrs: {
+                                  form: _vm.form,
+                                  field: "book_description"
+                                }
                               })
                             ],
                             1
@@ -66233,21 +66375,23 @@ var render = function() {
                                   {
                                     name: "model",
                                     rawName: "v-model",
-                                    value: _vm.form.email,
-                                    expression: "form.email"
+                                    value: _vm.form.book_author,
+                                    expression: "form.book_author"
                                   }
                                 ],
                                 staticClass: "form-control",
                                 class: {
-                                  "is-invalid": _vm.form.errors.has("email")
+                                  "is-invalid": _vm.form.errors.has(
+                                    "book_author"
+                                  )
                                 },
                                 attrs: {
-                                  id: "email",
-                                  type: "email",
-                                  name: "email",
-                                  Placeholder: "Email Address"
+                                  id: "book_author",
+                                  type: "text",
+                                  name: "book_author",
+                                  Placeholder: "Book Author"
                                 },
-                                domProps: { value: _vm.form.email },
+                                domProps: { value: _vm.form.book_author },
                                 on: {
                                   input: function($event) {
                                     if ($event.target.composing) {
@@ -66255,7 +66399,7 @@ var render = function() {
                                     }
                                     _vm.$set(
                                       _vm.form,
-                                      "email",
+                                      "book_author",
                                       $event.target.value
                                     )
                                   }
@@ -66263,7 +66407,7 @@ var render = function() {
                               }),
                               _vm._v(" "),
                               _c("has-error", {
-                                attrs: { form: _vm.form, field: "email" }
+                                attrs: { form: _vm.form, field: "book_author" }
                               })
                             ],
                             1
@@ -66278,21 +66422,23 @@ var render = function() {
                                   {
                                     name: "model",
                                     rawName: "v-model",
-                                    value: _vm.form.phone,
-                                    expression: "form.phone"
+                                    value: _vm.form.book_publisher,
+                                    expression: "form.book_publisher"
                                   }
                                 ],
                                 staticClass: "form-control",
                                 class: {
-                                  "is-invalid": _vm.form.errors.has("phone")
+                                  "is-invalid": _vm.form.errors.has(
+                                    "book_publisher"
+                                  )
                                 },
                                 attrs: {
-                                  id: "phone",
+                                  id: "book_publisher",
                                   type: "text",
-                                  name: "phone",
-                                  Placeholder: "2547********"
+                                  name: "book_publisher",
+                                  Placeholder: "Book Publisher"
                                 },
-                                domProps: { value: _vm.form.phone },
+                                domProps: { value: _vm.form.book_publisher },
                                 on: {
                                   input: function($event) {
                                     if ($event.target.composing) {
@@ -66300,7 +66446,7 @@ var render = function() {
                                     }
                                     _vm.$set(
                                       _vm.form,
-                                      "phone",
+                                      "book_publisher",
                                       $event.target.value
                                     )
                                   }
@@ -66308,7 +66454,196 @@ var render = function() {
                               }),
                               _vm._v(" "),
                               _c("has-error", {
-                                attrs: { form: _vm.form, field: "phone" }
+                                attrs: {
+                                  form: _vm.form,
+                                  field: "book_publisher"
+                                }
+                              })
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            { staticClass: "form-group" },
+                            [
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.form.book_pages,
+                                    expression: "form.book_pages"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                class: {
+                                  "is-invalid": _vm.form.errors.has(
+                                    "book_pages"
+                                  )
+                                },
+                                attrs: {
+                                  id: "book_pages",
+                                  type: "text",
+                                  name: "book_pages",
+                                  Placeholder: "No of Pages"
+                                },
+                                domProps: { value: _vm.form.book_pages },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.form,
+                                      "book_pages",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("has-error", {
+                                attrs: { form: _vm.form, field: "book_pages" }
+                              })
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            { staticClass: "form-group" },
+                            [
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.form.book_year,
+                                    expression: "form.book_year"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                class: {
+                                  "is-invalid": _vm.form.errors.has("book_year")
+                                },
+                                attrs: {
+                                  id: "book_year",
+                                  type: "text",
+                                  name: "book_year",
+                                  Placeholder: "Year of Publication"
+                                },
+                                domProps: { value: _vm.form.book_year },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.form,
+                                      "book_year",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("has-error", {
+                                attrs: { form: _vm.form, field: "book_year" }
+                              })
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            { staticClass: "form-group" },
+                            [
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.form.catalogue_no,
+                                    expression: "form.catalogue_no"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                class: {
+                                  "is-invalid": _vm.form.errors.has(
+                                    "catalogue_no"
+                                  )
+                                },
+                                attrs: {
+                                  id: "catalogue_no",
+                                  type: "text",
+                                  name: "catalogue_no",
+                                  Placeholder: "Book Catalogue Number"
+                                },
+                                domProps: { value: _vm.form.catalogue_no },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.form,
+                                      "catalogue_no",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("has-error", {
+                                attrs: { form: _vm.form, field: "catalogue_no" }
+                              })
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            { staticClass: "form-group" },
+                            [
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.form.accession_no,
+                                    expression: "form.accession_no"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                class: {
+                                  "is-invalid": _vm.form.errors.has(
+                                    "accession_no"
+                                  )
+                                },
+                                attrs: {
+                                  id: "accession_no",
+                                  type: "text",
+                                  name: "accession_no",
+                                  Placeholder: "Book Accession Number"
+                                },
+                                domProps: { value: _vm.form.accession_no },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.form,
+                                      "accession_no",
+                                      $event.target.value
+                                    )
+                                  }
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("has-error", {
+                                attrs: { form: _vm.form, field: "accession_no" }
                               })
                             ],
                             1
@@ -66325,17 +66660,17 @@ var render = function() {
                                     {
                                       name: "model",
                                       rawName: "v-model",
-                                      value: _vm.form.occupation,
-                                      expression: "form.occupation"
+                                      value: _vm.form.book_status,
+                                      expression: "form.book_status"
                                     }
                                   ],
                                   staticClass: "form-control",
                                   class: {
                                     "is-invalid": _vm.form.errors.has(
-                                      "occupation"
+                                      "book_status"
                                     )
                                   },
-                                  attrs: { id: "text", name: "occupation" },
+                                  attrs: { id: "text", name: "book_status" },
                                   on: {
                                     change: function($event) {
                                       var $$selectedVal = Array.prototype.filter
@@ -66351,7 +66686,7 @@ var render = function() {
                                         })
                                       _vm.$set(
                                         _vm.form,
-                                        "occupation",
+                                        "book_status",
                                         $event.target.multiple
                                           ? $$selectedVal
                                           : $$selectedVal[0]
@@ -66370,25 +66705,37 @@ var render = function() {
                                         hidden: ""
                                       }
                                     },
-                                    [_vm._v("Choose Occupation")]
+                                    [_vm._v("Available ?")]
                                   ),
                                   _vm._v(" "),
                                   _c(
                                     "option",
-                                    { attrs: { value: "Student" } },
-                                    [_vm._v("Student")]
+                                    { attrs: { value: "Available" } },
+                                    [_vm._v("Available")]
                                   ),
                                   _vm._v(" "),
                                   _c(
                                     "option",
-                                    { attrs: { value: "Professional" } },
-                                    [_vm._v("Professional")]
+                                    { attrs: { value: "Not Available" } },
+                                    [_vm._v("Not Available")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "option",
+                                    { attrs: { value: "Not Available" } },
+                                    [_vm._v("Not Available")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "option",
+                                    { attrs: { value: "Not Available" } },
+                                    [_vm._v("Not Available")]
                                   )
                                 ]
                               ),
                               _vm._v(" "),
                               _c("has-error", {
-                                attrs: { form: _vm.form, field: "occupation" }
+                                attrs: { form: _vm.form, field: "book_status" }
                               })
                             ],
                             1
@@ -66398,44 +66745,77 @@ var render = function() {
                             "div",
                             { staticClass: "form-group" },
                             [
-                              _c("input", {
-                                directives: [
-                                  {
-                                    name: "model",
-                                    rawName: "v-model",
-                                    value: _vm.form.institution,
-                                    expression: "form.institution"
-                                  }
-                                ],
-                                staticClass: "form-control",
-                                class: {
-                                  "is-invalid": _vm.form.errors.has(
-                                    "institution"
-                                  )
-                                },
-                                attrs: {
-                                  id: "institution",
-                                  type: "text",
-                                  name: "institution",
-                                  Placeholder: "Institution"
-                                },
-                                domProps: { value: _vm.form.institution },
-                                on: {
-                                  input: function($event) {
-                                    if ($event.target.composing) {
-                                      return
+                              _c(
+                                "select",
+                                {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.form.category_id,
+                                      expression: "form.category_id"
                                     }
-                                    _vm.$set(
-                                      _vm.form,
-                                      "institution",
-                                      $event.target.value
+                                  ],
+                                  staticClass: "form-control",
+                                  class: {
+                                    "is-invalid": _vm.form.errors.has(
+                                      "category_id"
                                     )
+                                  },
+                                  attrs: { id: "text", name: "category_id" },
+                                  on: {
+                                    change: function($event) {
+                                      var $$selectedVal = Array.prototype.filter
+                                        .call($event.target.options, function(
+                                          o
+                                        ) {
+                                          return o.selected
+                                        })
+                                        .map(function(o) {
+                                          var val =
+                                            "_value" in o ? o._value : o.value
+                                          return val
+                                        })
+                                      _vm.$set(
+                                        _vm.form,
+                                        "category_id",
+                                        $event.target.multiple
+                                          ? $$selectedVal
+                                          : $$selectedVal[0]
+                                      )
+                                    }
                                   }
-                                }
-                              }),
+                                },
+                                [
+                                  _c(
+                                    "option",
+                                    {
+                                      attrs: {
+                                        value: "",
+                                        disabled: "",
+                                        selected: "",
+                                        hidden: ""
+                                      }
+                                    },
+                                    [_vm._v("Choose Category")]
+                                  ),
+                                  _vm._v(" "),
+                                  _vm._l(_vm.categories, function(category) {
+                                    return _c(
+                                      "option",
+                                      {
+                                        key: category.id,
+                                        domProps: { value: category.id }
+                                      },
+                                      [_vm._v(_vm._s(category.category_name))]
+                                    )
+                                  })
+                                ],
+                                2
+                              ),
                               _vm._v(" "),
                               _c("has-error", {
-                                attrs: { form: _vm.form, field: "institution" }
+                                attrs: { form: _vm.form, field: "category_id" }
                               })
                             ],
                             1
@@ -66445,41 +66825,77 @@ var render = function() {
                             "div",
                             { staticClass: "form-group" },
                             [
-                              _c("input", {
-                                directives: [
-                                  {
-                                    name: "model",
-                                    rawName: "v-model",
-                                    value: _vm.form.password,
-                                    expression: "form.password"
-                                  }
-                                ],
-                                staticClass: "form-control",
-                                class: {
-                                  "is-invalid": _vm.form.errors.has("password")
-                                },
-                                attrs: {
-                                  type: "password",
-                                  name: "password",
-                                  Placeholder: "Password"
-                                },
-                                domProps: { value: _vm.form.password },
-                                on: {
-                                  input: function($event) {
-                                    if ($event.target.composing) {
-                                      return
+                              _c(
+                                "select",
+                                {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.form.book_type_id,
+                                      expression: "form.book_type_id"
                                     }
-                                    _vm.$set(
-                                      _vm.form,
-                                      "password",
-                                      $event.target.value
+                                  ],
+                                  staticClass: "form-control",
+                                  class: {
+                                    "is-invalid": _vm.form.errors.has(
+                                      "book_type_id"
                                     )
+                                  },
+                                  attrs: { id: "text", name: "book_type_id" },
+                                  on: {
+                                    change: function($event) {
+                                      var $$selectedVal = Array.prototype.filter
+                                        .call($event.target.options, function(
+                                          o
+                                        ) {
+                                          return o.selected
+                                        })
+                                        .map(function(o) {
+                                          var val =
+                                            "_value" in o ? o._value : o.value
+                                          return val
+                                        })
+                                      _vm.$set(
+                                        _vm.form,
+                                        "book_type_id",
+                                        $event.target.multiple
+                                          ? $$selectedVal
+                                          : $$selectedVal[0]
+                                      )
+                                    }
                                   }
-                                }
-                              }),
+                                },
+                                [
+                                  _c(
+                                    "option",
+                                    {
+                                      attrs: {
+                                        value: "",
+                                        disabled: "",
+                                        selected: "",
+                                        hidden: ""
+                                      }
+                                    },
+                                    [_vm._v("Choose Category Type")]
+                                  ),
+                                  _vm._v(" "),
+                                  _vm._l(_vm.bookTypes, function(bookType) {
+                                    return _c(
+                                      "option",
+                                      {
+                                        key: bookType.id,
+                                        domProps: { value: bookType.id }
+                                      },
+                                      [_vm._v(_vm._s(bookType.type_name))]
+                                    )
+                                  })
+                                ],
+                                2
+                              ),
                               _vm._v(" "),
                               _c("has-error", {
-                                attrs: { form: _vm.form, field: "password" }
+                                attrs: { form: _vm.form, field: "book_type_id" }
                               })
                             ],
                             1
@@ -66551,7 +66967,7 @@ var staticRenderFns = [
       _c("div", { staticClass: "container-fluid" }, [
         _c("div", { staticClass: "row mb-2" }, [
           _c("div", { staticClass: "col-sm-6" }, [
-            _c("h1", { staticClass: "m-0 text-dark" }, [_vm._v("Users")])
+            _c("h1", { staticClass: "m-0 text-dark" }, [_vm._v("Books")])
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "col-sm-6" }, [
@@ -66561,7 +66977,7 @@ var staticRenderFns = [
               ]),
               _vm._v(" "),
               _c("li", { staticClass: "breadcrumb-item active" }, [
-                _vm._v("Users")
+                _vm._v("Books")
               ])
             ])
           ])
@@ -66574,8 +66990,8 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("h3", { staticClass: "card-title" }, [
-      _c("i", { staticClass: "fas fa-users nav-icon" }),
-      _vm._v(" Users")
+      _c("i", { staticClass: "fas fa-book nav-icon" }),
+      _vm._v(" Books")
     ])
   },
   function() {
@@ -66588,11 +67004,15 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Name")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Email")]),
+        _c("th", [_vm._v("Author")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Occupation")]),
+        _c("th", [_vm._v("Year")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Registered on")]),
+        _c("th", [_vm._v("Type")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Category")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Status")]),
         _vm._v(" "),
         _c("th", [_vm._v("Action")])
       ])
@@ -66614,6 +67034,25 @@ var staticRenderFns = [
       },
       [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
     )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-group" }, [
+      _c(
+        "label",
+        { staticClass: "col-sm-2 control-label", attrs: { for: "photo" } },
+        [_vm._v("Profile Photo")]
+      ),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-sm-12" }, [
+        _c("input", {
+          staticClass: "form-input",
+          attrs: { type: "file", name: "book_photo" }
+        })
+      ])
+    ])
   }
 ]
 render._withStripped = true
