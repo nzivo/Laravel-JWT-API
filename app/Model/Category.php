@@ -2,6 +2,7 @@
 
 namespace App\Model;
 
+use App\Model\Book;
 use App\Model\BookType;
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,5 +21,11 @@ class Category extends Model
     {
         # code...
         return $this->hasMany(BookType::class);
+    }
+
+    public function books()
+    {
+        # code...
+        return $this->hasMany(Book::class);
     }
 }
