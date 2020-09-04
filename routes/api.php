@@ -31,3 +31,4 @@ Route::group(['prefix'=>'category'],function(){
 });
 
 Route::apiResource('bookType', 'API\BookTypeController');
+Route::apiResource('book', 'API\BookController');
