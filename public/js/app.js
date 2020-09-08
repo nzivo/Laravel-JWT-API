@@ -2380,6 +2380,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2390,6 +2399,8 @@ __webpack_require__.r(__webpack_exports__);
       bookTypes: {},
       categories: {},
       form: new vform__WEBPACK_IMPORTED_MODULE_0___default.a({
+        id: '',
+        book_photo: '',
         book_name: '',
         book_description: '',
         book_author: '',
@@ -2400,7 +2411,11 @@ __webpack_require__.r(__webpack_exports__);
         accession_no: '',
         book_status: '',
         category_id: '',
-        book_type_id: ''
+        book_type_id: '',
+        styleObject: {
+          width: '128px',
+          height: '80px'
+        }
       })
     };
   },
@@ -2472,23 +2487,49 @@ __webpack_require__.r(__webpack_exports__);
         });
 
         _this5.$Progress.finish();
+
+        _this5.form.reset();
       })["catch"](function () {
         _this5.$Progress.fail();
       });
     },
-    updateBook: function updateBook(id) {
+    upload_avatar: function upload_avatar(e) {
       var _this6 = this;
+
+      var book_photo = e.target.files[0];
+      var reader = new FileReader();
+
+      if (book_photo['size'] < 2111775) {
+        reader.onloadend = function (book_photo) {
+          //console.log('RESULT', reader.result)
+          _this6.form.book_photo = reader.result;
+        };
+
+        reader.readAsDataURL(book_photo);
+      } else {
+        alert('File size can not be bigger than 2 MB');
+      }
+    },
+    //For getting Instant Uploaded Photo
+    // get_avatar(){
+    //    let photo = (this.form.book_photo.length > 100) ? this.form.book_photo : "img/books/"+ this.form.book_photo;
+    //    return photo;
+    // },
+    updateBook: function updateBook(id) {
+      var _this7 = this;
 
       this.$Progress.start();
       this.form.put('api/book/' + this.form.id).then(function () {
         $('#addBookModal').modal('hide');
         sweetalert2_src_sweetalert2_js__WEBPACK_IMPORTED_MODULE_1__["default"].fire('Update!', 'Your Record has been updated.', 'success');
 
-        _this6.$Progress.finish();
+        _this7.$Progress.finish();
 
         Fire.$emit('reloadBooks');
+
+        _this7.form.reset();
       })["catch"](function () {
-        _this6.$Progress.fail();
+        _this7.$Progress.fail();
       });
     },
     editModal: function editModal(book) {
@@ -2500,19 +2541,19 @@ __webpack_require__.r(__webpack_exports__);
       this.form.fill(book);
     },
     newModal: function newModal() {
+      this.form.reset();
+      this.editmode = false;
+      $('#addBookModal').modal('show');
       this.viewBookTypes();
       this.viewCategories();
-      this.editmode = false;
-      this.form.clear();
-      $('#addBookModal').modal('show');
     }
   },
   created: function created() {
-    var _this7 = this;
+    var _this8 = this;
 
     this.viewBooks();
     Fire.$on('reloadBooks', function () {
-      _this7.viewBooks();
+      _this8.viewBooks();
     });
   }
 });
@@ -66129,6 +66170,27 @@ var render = function() {
                             _c("td", [_vm._v(_vm._s(book.id))]),
                             _vm._v(" "),
                             _c("td", [
+                              _c(
+                                "div",
+                                {
+                                  staticClass: "avatar img-fluid img-circle",
+                                  staticStyle: { "margin-top": "10px" }
+                                },
+                                [
+                                  _c("img", {
+                                    staticStyle: {
+                                      height: "64px",
+                                      width: "40px"
+                                    },
+                                    attrs: {
+                                      src: "img/books/" + book.book_photo
+                                    }
+                                  })
+                                ]
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [
                               _vm._v(
                                 _vm._s(_vm._f("upperCase")(book.book_name))
                               )
@@ -66269,8 +66331,6 @@ var render = function() {
                       },
                       [
                         _c("div", { staticClass: "modal-body" }, [
-                          _vm._m(4),
-                          _vm._v(" "),
                           _c(
                             "div",
                             { staticClass: "form-group" },
@@ -66670,7 +66730,10 @@ var render = function() {
                                       "book_status"
                                     )
                                   },
-                                  attrs: { id: "text", name: "book_status" },
+                                  attrs: {
+                                    id: "book_status",
+                                    name: "book_status"
+                                  },
                                   on: {
                                     change: function($event) {
                                       var $$selectedVal = Array.prototype.filter
@@ -66762,7 +66825,10 @@ var render = function() {
                                       "category_id"
                                     )
                                   },
-                                  attrs: { id: "text", name: "category_id" },
+                                  attrs: {
+                                    id: "category_id",
+                                    name: "category_id"
+                                  },
                                   on: {
                                     change: function($event) {
                                       var $$selectedVal = Array.prototype.filter
@@ -66842,7 +66908,10 @@ var render = function() {
                                       "book_type_id"
                                     )
                                   },
-                                  attrs: { id: "text", name: "book_type_id" },
+                                  attrs: {
+                                    id: "book_type_id",
+                                    name: "book_type_id"
+                                  },
                                   on: {
                                     change: function($event) {
                                       var $$selectedVal = Array.prototype.filter
@@ -66899,7 +66968,35 @@ var render = function() {
                               })
                             ],
                             1
-                          )
+                          ),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "row" }, [
+                            _c(
+                              "div",
+                              { staticClass: "col-lg-6 col-md-6" },
+                              [
+                                _c("input", {
+                                  class: {
+                                    "is-invalid": _vm.form.errors.has(
+                                      "book_photo"
+                                    )
+                                  },
+                                  attrs: { type: "file", name: "book_photo" },
+                                  on: { change: _vm.upload_avatar }
+                                }),
+                                _vm._v(" "),
+                                _c("has-error", {
+                                  attrs: { form: _vm.form, field: "avatar" }
+                                }),
+                                _vm._v(" "),
+                                _c("div", {
+                                  staticClass: "avatar img-fluid img-circle",
+                                  staticStyle: { "margin-top": "10px" }
+                                })
+                              ],
+                              1
+                            )
+                          ])
                         ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "modal-footer" }, [
@@ -67002,6 +67099,8 @@ var staticRenderFns = [
       _c("tr", [
         _c("th", [_vm._v("ID")]),
         _vm._v(" "),
+        _c("th", [_vm._v("Cover")]),
+        _vm._v(" "),
         _c("th", [_vm._v("Name")]),
         _vm._v(" "),
         _c("th", [_vm._v("Author")]),
@@ -67034,25 +67133,6 @@ var staticRenderFns = [
       },
       [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
     )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group" }, [
-      _c(
-        "label",
-        { staticClass: "col-sm-2 control-label", attrs: { for: "photo" } },
-        [_vm._v("Profile Photo")]
-      ),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-sm-12" }, [
-        _c("input", {
-          staticClass: "form-input",
-          attrs: { type: "file", name: "book_photo" }
-        })
-      ])
-    ])
   }
 ]
 render._withStripped = true
@@ -83671,8 +83751,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_progressbar__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue_progressbar__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var vform__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vform */ "./node_modules/vform/dist/vform.common.js");
 /* harmony import */ var vform__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vform__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var sweetalert2_src_sweetalert2_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! sweetalert2/src/sweetalert2.js */ "./node_modules/sweetalert2/src/sweetalert2.js");
-/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
+/* harmony import */ var _objectToFormData__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./objectToFormData */ "./resources/js/objectToFormData.js");
+/* harmony import */ var _objectToFormData__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_objectToFormData__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var sweetalert2_src_sweetalert2_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! sweetalert2/src/sweetalert2.js */ "./node_modules/sweetalert2/src/sweetalert2.js");
+/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -83685,12 +83767,14 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.
 
 
 window.form = vform__WEBPACK_IMPORTED_MODULE_2__["Form"];
+
+window.objectToFormData = _objectToFormData__WEBPACK_IMPORTED_MODULE_3___default.a;
 Vue.component(vform__WEBPACK_IMPORTED_MODULE_2__["HasError"].name, vform__WEBPACK_IMPORTED_MODULE_2__["HasError"]);
 Vue.component(vform__WEBPACK_IMPORTED_MODULE_2__["AlertError"].name, vform__WEBPACK_IMPORTED_MODULE_2__["AlertError"]);
 
-window.Swal = sweetalert2_src_sweetalert2_js__WEBPACK_IMPORTED_MODULE_3__["default"];
+window.Swal = sweetalert2_src_sweetalert2_js__WEBPACK_IMPORTED_MODULE_4__["default"];
 
-Vue.use(vue_router__WEBPACK_IMPORTED_MODULE_4__["default"]);
+Vue.use(vue_router__WEBPACK_IMPORTED_MODULE_5__["default"]);
 var routes = [{
   path: '/dashboard',
   component: __webpack_require__(/*! ./components/Dashboard.vue */ "./resources/js/components/Dashboard.vue")["default"]
@@ -83710,7 +83794,7 @@ var routes = [{
   path: '/books',
   component: __webpack_require__(/*! ./components/Books.vue */ "./resources/js/components/Books.vue")["default"]
 }];
-var router = new vue_router__WEBPACK_IMPORTED_MODULE_4__["default"]({
+var router = new vue_router__WEBPACK_IMPORTED_MODULE_5__["default"]({
   mode: 'history',
   routes: routes // short for `routes: routes`
 
@@ -83730,15 +83814,15 @@ Vue.use(vue_progressbar__WEBPACK_IMPORTED_MODULE_1___default.a, {
   height: '5px'
 }); //SweetAlert2
 
-var Toast = sweetalert2_src_sweetalert2_js__WEBPACK_IMPORTED_MODULE_3__["default"].mixin({
+var Toast = sweetalert2_src_sweetalert2_js__WEBPACK_IMPORTED_MODULE_4__["default"].mixin({
   toast: true,
   position: 'top-end',
   showConfirmButton: false,
   timer: 3000,
   timerProgressBar: true,
   onOpen: function onOpen(toast) {
-    toast.addEventListener('mouseenter', sweetalert2_src_sweetalert2_js__WEBPACK_IMPORTED_MODULE_3__["default"].stopTimer);
-    toast.addEventListener('mouseleave', sweetalert2_src_sweetalert2_js__WEBPACK_IMPORTED_MODULE_3__["default"].resumeTimer);
+    toast.addEventListener('mouseenter', sweetalert2_src_sweetalert2_js__WEBPACK_IMPORTED_MODULE_4__["default"].stopTimer);
+    toast.addEventListener('mouseleave', sweetalert2_src_sweetalert2_js__WEBPACK_IMPORTED_MODULE_4__["default"].resumeTimer);
   }
 });
 window.Toast = Toast;
@@ -84297,6 +84381,79 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Users_vue_vue_type_template_id_30c27aa6___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
+
+/***/ }),
+
+/***/ "./resources/js/objectToFormData.js":
+/*!******************************************!*\
+  !*** ./resources/js/objectToFormData.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+(function (global, factory) {
+  ( false ? undefined : _typeof(exports)) === 'object' && typeof module !== 'undefined' ? module.exports = factory() :  true ? !(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
+				__WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : undefined;
+})(this, function () {
+  'use strict';
+
+  function isUndefined(value) {
+    return value === undefined;
+  }
+
+  function isObject(value) {
+    return value === Object(value);
+  }
+
+  function isArray(value) {
+    return Array.isArray(value);
+  }
+
+  function isFile(value) {
+    return value instanceof File;
+  }
+
+  function isDate(value) {
+    return value instanceof Date;
+  }
+
+  function objectToFormData(obj, fd, pre) {
+    fd = fd || new FormData();
+
+    if (isUndefined(obj)) {
+      return fd;
+    } else if (isArray(obj)) {
+      obj.forEach(function (value) {
+        var key = pre + '[]';
+        objectToFormData(value, fd, key);
+      });
+    } else if (isObject(obj) && !isFile(obj) && !isDate(obj)) {
+      Object.keys(obj).forEach(function (prop) {
+        var value = obj[prop];
+
+        if (isArray(value)) {
+          while (prop.length > 2 && prop.lastIndexOf('[]') === prop.length - 2) {
+            prop = prop.substring(0, prop.length - 2);
+          }
+        }
+
+        var key = pre ? pre + '[' + prop + ']' : prop;
+        objectToFormData(value, fd, key);
+      });
+    } else {
+      fd.append(pre, obj);
+    }
+
+    return fd;
+  }
+
+  return objectToFormData;
+});
 
 /***/ }),
 
