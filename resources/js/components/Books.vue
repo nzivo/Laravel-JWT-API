@@ -42,6 +42,7 @@
                                     <thead>
                                         <tr>
                                             <th>ID</th>
+                                            <th>Cover</th>
                                             <th>Name</th>
                                             <th>Author</th>
                                             <th>Year</th>
@@ -54,6 +55,11 @@
                                     <tbody>
                                         <tr v-for="book in books" :key="book.id">
                                             <td>{{book.id}}</td>
+                                            <td>
+                                                <div class="avatar img-fluid img-circle" style="margin-top:10px">
+                                                    <img style="height:64px;width:40px" v-bind:src="'img/books/' + book.book_photo"/>
+                                                </div>
+                                            </td>
                                             <td>{{book.book_name | upperCase}}</td>
                                             <td>{{book.book_author | upperCase}}</td>
                                             <td>{{book.book_year }}</td>
@@ -93,12 +99,6 @@
                         <form @submit.prevent="editmode ? updateBook() : createBook()">
 
                             <div class="modal-body">
-                                <div class="form-group">
-                                    <label for="photo" class="col-sm-2 control-label">Profile Photo</label>
-                                    <div class="col-sm-12">
-                                        <input type="file" name="book_photo" class="form-input">
-                                    </div>
-                                </div>
                                 <div class="form-group">
                                     <input v-model="form.book_name" id="book_name" type="text" name="book_name" Placeholder="Book Title"
                                         class="form-control" :class="{ 'is-invalid': form.errors.has('book_name') }">
@@ -141,7 +141,7 @@
                                     <has-error :form="form" field="accession_no"></has-error>
                                 </div>
                                 <div class="form-group">
-                                    <select v-model="form.book_status" id="text" name="book_status"
+                                    <select v-model="form.book_status" id="book_status" name="book_status"
                                         class="form-control" :class="{ 'is-invalid': form.errors.has('book_status') }">
                                         <option value="" disabled selected hidden>Available ?</option>
                                         <option value="Available">Available</option>
@@ -152,7 +152,7 @@
                                     <has-error :form="form" field="book_status"></has-error>
                                 </div>
                                 <div class="form-group">
-                                    <select v-model="form.category_id" id="text" name="category_id"
+                                    <select v-model="form.category_id" id="category_id" name="category_id"
                                         class="form-control" :class="{ 'is-invalid': form.errors.has('category_id') }">
                                         <option value="" disabled selected hidden>Choose Category</option>
                                         <option v-for="category in categories" :value="category.id" :key="category.id">{{category.category_name}}</option>
@@ -160,12 +160,21 @@
                                     <has-error :form="form" field="category_id"></has-error>
                                 </div>
                                 <div class="form-group">
-                                    <select v-model="form.book_type_id" id="text" name="book_type_id"
+                                    <select v-model="form.book_type_id" id="book_type_id" name="book_type_id"
                                         class="form-control" :class="{ 'is-invalid': form.errors.has('book_type_id') }">
                                         <option value="" disabled selected hidden>Choose Category Type</option>
                                         <option v-for="bookType in bookTypes" :value="bookType.id" :key="bookType.id">{{bookType.type_name}}</option>
                                     </select>
                                     <has-error :form="form" field="book_type_id"></has-error>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6">
+                                        <input type="file" @change='upload_avatar' :class="{ 'is-invalid': form.errors.has('book_photo') }" name="book_photo">
+                                        <has-error :form="form" field="avatar"></has-error>
+                                        <div class="avatar img-fluid img-circle" style="margin-top:10px">
+                                            <!-- <img v-bind:src="get_avatar()" v-bind:style="form.styleObject"/> -->
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -203,6 +212,8 @@
                 bookTypes: {},
                 categories: {},
                 form: new Form({
+                    id: '',
+                    book_photo: '',
                     book_name : '',
                     book_description : '',
                     book_author : '',
@@ -214,6 +225,11 @@
                     book_status : '',
                     category_id : '',
                     book_type_id : '',
+
+                    styleObject: {
+                        width: '128px',
+                        height: '80px'
+                    }
                 })
             }
         },
@@ -280,13 +296,35 @@
                     title: 'Book Registered successfully'
                 });
 
-                    this.$Progress.finish()
+                    this.$Progress.finish();
+
+                    this.form.reset();
 
                 }).catch(()=>{
                     this.$Progress.fail()
                 });
 
             },
+            upload_avatar(e){
+              let book_photo = e.target.files[0];
+                let reader = new FileReader();
+
+                if(book_photo['size'] < 2111775)
+                {
+                    reader.onloadend = (book_photo) => {
+                    //console.log('RESULT', reader.result)
+                     this.form.book_photo = reader.result;
+                    }
+                     reader.readAsDataURL(book_photo);
+                }else{
+                    alert('File size can not be bigger than 2 MB')
+                }
+            },
+             //For getting Instant Uploaded Photo
+            // get_avatar(){
+            //    let photo = (this.form.book_photo.length > 100) ? this.form.book_photo : "img/books/"+ this.form.book_photo;
+            //    return photo;
+            // },
             updateBook(id){
                 this.$Progress.start()
                 this.form.put('api/book/'+ this.form.id).then(() => {
@@ -303,6 +341,8 @@
 
                     Fire.$emit('reloadBooks');
 
+                    this.form.reset();
+
                 }).catch(() => {
                     this.$Progress.fail()
                 })
@@ -316,11 +356,11 @@
                 this.form.fill(book);
             },
             newModal(){
+                this.form.reset();
+                this.editmode = false;
+                $('#addBookModal').modal('show');
                 this.viewBookTypes();
                 this.viewCategories();
-                this.editmode = false;
-                this.form.clear();
-                $('#addBookModal').modal('show');
             },
         },
         created() {
