@@ -12,6 +12,10 @@ import VueProgressBar from 'vue-progressbar';
 
 import { Form, HasError, AlertError } from 'vform';
 window.form = Form;
+
+import objectToFormData from "./objectToFormData";
+window.objectToFormData = objectToFormData;
+
 Vue.component(HasError.name, HasError);
 Vue.component(AlertError.name, AlertError);
 
